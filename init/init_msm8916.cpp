@@ -1,6 +1,5 @@
 /*
    Copyright (c) 2016, The CyanogenMod Project
-
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are
    met:
@@ -13,7 +12,6 @@
     * Neither the name of The Linux Foundation nor the names of its
       contributors may be used to endorse or promote products derived
       from this software without specific prior written permission.
-
    THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
@@ -36,14 +34,15 @@
 
 #include <android-base/strings.h>
 
-#include "vendor_init.h"
+#include <android-base/properties.h>
 #include "property_service.h"
+#include "vendor_init.h"
 #include "log.h"
-#include "util.h"
 
 #include "init_msm8916.h"
 
 using android::base::Trim;
+using android::base::GetProperty;
 
 __attribute__ ((weak))
 void init_target_properties()
@@ -56,7 +55,7 @@ static void init_alarm_boot_properties()
     char const *power_off_alarm_file = "/persist/alarm/powerOffAlarmSet";
     std::string boot_reason;
     std::string power_off_alarm;
-    std::string tmp = property_get("ro.boot.alarmboot");
+    std::string tmp = GetProperty("ro.boot.alarmboot","");
 
     if (read_file(boot_reason_file, &boot_reason)
             && read_file(power_off_alarm_file, &power_off_alarm)) {
@@ -77,9 +76,9 @@ static void init_alarm_boot_properties()
          */
         if ((Trim(boot_reason) == "3" || tmp == "true")
                 && Trim(power_off_alarm) == "1")
-            property_set("ro.alarm_boot", "true");
+            GetProperty("ro.alarm_boot","", "true");
         else
-            property_set("ro.alarm_boot", "false");
+            GetProperty("ro.alarm_boot","", "false");
     }
 }
 
