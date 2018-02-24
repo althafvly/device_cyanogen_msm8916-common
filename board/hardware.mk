@@ -1,4 +1,3 @@
-TARGET_TAP_TO_WAKE_NODE := "/proc/touchpanel/double_tap_enable"
 BOARD_USES_CYANOGEN_HARDWARE := true
 ALLOW_MISSING_DEPENDENCIES =true
 WITH_DEXPREOPT := false
