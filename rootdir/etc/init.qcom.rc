@@ -204,8 +204,6 @@ on boot
     mkdir /dev/socket/qmux_gps 0770 gps gps
     chmod 2770 /dev/socket/qmux_gps
 
-    mkdir /persist/alarm 0770 system system
-
     #Create NETMGR daemon socket area
     mkdir /dev/socket/netmgr 0750 radio radio
 
@@ -299,7 +297,7 @@ service irsc_util /system/bin/irsc_util "/etc/sec_config"
 service rmt_storage /system/bin/rmt_storage
     class core
     user root
-    group system wakelock
+    group wakelock
     writepid /dev/cpuset/system-background/tasks
 
 service config_bt_addr /system/bin/btnvtool -O
@@ -338,7 +336,7 @@ on property:hw.fm.init=1
 service qmuxd /system/bin/qmuxd
     class main
     user root
-    group radio audio bluetooth gps oem_2950 wakelock
+    group radio audio bluetooth gps diag wakelock
     writepid /dev/cpuset/system-background/tasks
 
 service msm_irqbalance /system/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance.conf
@@ -349,8 +347,7 @@ service msm_irqbalance /system/bin/msm_irqbalance -f /system/vendor/etc/msm_irqb
 
 service netmgrd /system/bin/netmgrd
     class main
-    user root
-    group root wifi wakelock radio inet
+    group system wakelock
     writepid /dev/cpuset/system-background/tasks
 
 on property:ro.use_data_netmgrd=false
@@ -381,13 +378,13 @@ service wpa_supplicant /vendor/bin/hw/wpa_supplicant \
 service loc_launcher /system/bin/loc_launcher
     #loc_launcher will start as root and set its uid to gps
     class late_start
-    group gps inet net_raw oem_2950 net_admin wifi
+    group gps inet net_raw diag net_admin wifi
 
 on property:ro.data.large_tcp_window_size=true
     # Adjust socket buffer to enlarge TCP receive window for high bandwidth (e.g. DO-RevB)
     write /proc/sys/net/ipv4/tcp_adv_win_scale  2
 
-service ril-daemon2 /vendor/hw/rild -c 2
+service ril-daemon2 /vendor/bin/hw/rild -c 2
     class main
     user radio
     group radio cache inet misc audio log readproc wakelock
@@ -474,3 +471,4 @@ service wcnss-service /system/bin/wcnss_service
 service qcom-mem /system/bin/sh /system/etc/init.qcom.mem.sh
     disabled
     oneshot
+
